@@ -18,6 +18,8 @@ class StockDataset(Dataset):
                 on a sample.
         """
         self.root_dir = Path(root_dir)
+        self.means=None
+        self.stds=None
         self.stock_data = self._collect_csv_files()
         self.len_window = 7
         self.transform = transform
@@ -28,7 +30,13 @@ class StockDataset(Dataset):
             df = pd.read_csv(str(file)).iloc[:, 2:-1]
             df_list.append(df)
 
-        return np.array(pd.concat(df_list, axis=1))
+        # Normalisation
+        result = np.array(pd.concat(df_list, axis=1))
+        self.means = np.mean(result, axis=0)
+        self.stds = np.std(result, axis=0)
+        result = (result-self.means) / self.stds
+
+        return result
 
     def __len__(self):
         return len(self.stock_data)-self.len_window+1
