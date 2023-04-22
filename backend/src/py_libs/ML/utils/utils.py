@@ -9,3 +9,7 @@ def undo_normaliztion(output, label, means_stds):
     output = (output*means_stds[1])+means_stds[0]
     label = (label*means_stds[1])+means_stds[0]
     return output, label
+
+
+def undo_normaliztion_input(inputs, means_stds):
+    return (inputs*means_stds[1]) + means_stds[0]

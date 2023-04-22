@@ -9,7 +9,7 @@ from functools import reduce
 class StockDataset(Dataset):
     """Face Landmarks dataset."""
 
-    def __init__(self, root_dir: str, transform=None):
+    def __init__(self, root_dir: str, window_len: int, transform=None):
         """
         Arguments:
             csv_file (string): Path to the csv file with annotations.
@@ -21,13 +21,15 @@ class StockDataset(Dataset):
         self.means=None
         self.stds=None
         self.stock_data = self._collect_csv_files()
-        self.len_window = 7
+        self.window_len = window_len
         self.transform = transform
 
     def _collect_csv_files(self):
         df_list = []
         for file in self.root_dir.iterdir():
             df = pd.read_csv(str(file)).iloc[:, 2:-1]
+            if df.isnull().sum().sum()>0:
+                print(str(file))
             df_list.append(df)
 
         # Normalisation
@@ -39,13 +41,13 @@ class StockDataset(Dataset):
         return result
 
     def __len__(self):
-        return len(self.stock_data)-self.len_window+1
+        return len(self.stock_data)-self.window_len+1
 
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        data_window = self.stock_data[idx:idx+self.len_window]
+        data_window = self.stock_data[idx:idx+self.window_len]
         data = data_window[:-2]
         label = self.get_label(data_window)
 

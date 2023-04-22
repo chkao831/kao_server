@@ -1,4 +1,5 @@
 from src.py_libs.objects.stock_data import StockDataHandler
+from src.py_libs.objects.data_preprocess import DataPreprocessor
 import logging
 import pandas as pd
 from tqdm import tqdm
@@ -38,5 +39,7 @@ def refill_unfetchable_data(cur_date: str="2088/8/28"):
 
 
 if __name__ == '__main__':
-    tool = StockDataHandler()
-    tool.fetch_until_today()
+    # tool = StockDataHandler()
+    # tool.fetch_history()
+    tool = DataPreprocessor()
+    tool.check_na()

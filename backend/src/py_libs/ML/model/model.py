@@ -13,3 +13,18 @@ class Net(nn.Module):
         x = nn.functional.relu(self.fc2(x))
         x = self.fc3(x)
         return x
+class GRUNet(nn.Module):
+    def __init__(self, in_dim, out_dim, window_len):
+        super().__init__()
+        self.gru = nn.GRU(in_dim, 256, 2)
+        self.fc2 = nn.Linear((window_len-2)*256, 512)
+        self.fc3 = nn.Linear(512, out_dim)
+
+    def forward(self, x):
+        # x = x.reshape(x.shape[0],-1)
+        x, _ = self.gru(x)
+        x = nn.functional.relu(x)
+        x = x.reshape(x.shape[0], -1)
+        x = nn.functional.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x

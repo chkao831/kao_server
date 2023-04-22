@@ -12,6 +12,25 @@ class DataPreprocessor:
     def __init__(self):
         pass
 
+    def check_na(self):
+        root_folder = Path(REPO + './stock_raw_data')
+        for file in tqdm(root_folder.iterdir()):
+            df = pd.read_csv(str(file))
+            if len(df)<1073:
+                print(str(file))
+                file.unlink()
+    def check_row(self):
+        tar_folder = Path(REPO + './stock_raw_data')
+        c = -1
+        for file in tqdm(tar_folder.iterdir()):
+            df = pd.read_csv(str(file))
+            if c==-1:
+                c=len(df)
+            else:
+                if c!=len(df):
+                    print(str(file))
+                    print(c)
+                    c=len(df)
     def remove_too_short(self):
         from datetime import datetime
         from collections import Counter
@@ -32,10 +51,10 @@ class DataPreprocessor:
 
     def pick_top500_independent(self):
         def func(row):
-            all_vector[row.name].append(row.iloc[1:7].to_numpy().astype(np.float32))
+            all_vector[row.name].append(row.iloc[2:8].to_numpy().astype(np.float32))
 
-        root_folder = Path('./stock_raw_data')
-        num_row = 568
+        root_folder = Path(REPO + './stack_fetch_data')
+        num_row = 1073
         all_vector = [[] for _ in range(num_row)]
         for file in tqdm(root_folder.iterdir()):
             # if len(all_vector[0])>10:
@@ -65,7 +84,7 @@ class DataPreprocessor:
                 print(e)
                 continue
 
-        with open('v_order.txt', 'a') as f:
+        with open('v_order.txt', 'w') as f:
             f.write(f"{', '.join([str(x) for x in sorted(list(var_score.items()), key=lambda x: x[1])])}\n")
         return
 
@@ -78,7 +97,7 @@ class DataPreprocessor:
         pairs = [int(p[0]) for p in pairs][:500]
         pairs = set(pairs)
 
-        root_folder = Path('./stock_raw_data')
+        root_folder = Path('./stack_fetch_data')
         cnt = 0
 
         for file in tqdm(root_folder.iterdir()):
