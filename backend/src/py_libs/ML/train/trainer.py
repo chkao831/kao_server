@@ -16,12 +16,13 @@ import matplotlib.pyplot as plt
 stock_data_path = "./stock_raw_data"
 num_stock=483
 window_len = 20
+batch_size = 16
 dataset = StockDataset(stock_data_path, window_len=window_len)
 train_size = int(0.8 * len(dataset))  # 80% for training
 test_size = len(dataset) - train_size  # Remaining 20% for testing
 train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
 
-train_dataloader = DataLoader(train_dataset, batch_size=8, shuffle=True)
+train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=True)
 
 # Create an instance of your neural network and choose an optimizer
@@ -34,32 +35,33 @@ eval_losses = []
 profits=[]
 
 model_path = Path(REPO + "/model_checkpoint/simple_net_20l.pt")
-# net.load_state_dict(torch.load(str(model_path)))
+net.load_state_dict(torch.load(str(model_path)))
 
 # Train your neural network
 for epoch in range(5):  # Replace 10 with the number of epochs you want to train for
-    net.train()
-    for batch in tqdm(train_dataloader):
-        inputs, labels = batch["data"].to(torch.float32), batch["label"].to(torch.float32)
-        optimizer.zero_grad()
-        outputs = net(inputs)
-        loss = nn.functional.mse_loss(outputs, labels)
-        loss.backward()
-        optimizer.step()
-        losses.append(loss.item())
+    loss_fn=MSE_save
+    # net.train()
+    # for batch in tqdm(train_dataloader):
+    #     inputs, labels = batch["data"].to(torch.float32), batch["label"].to(torch.float32)
+    #     optimizer.zero_grad()
+    #     outputs = net(inputs)
+    #     loss = loss_fn(outputs, labels)
+    #     loss.backward()
+    #     optimizer.step()
+    #     losses.append(loss.item())
 
     net.eval()
     for batch in tqdm(test_dataloader):
         inputs, labels = batch["data"].to(torch.float32), batch["label"].to(torch.float32)
         outputs = net(inputs)
-        loss = MSE_save(outputs, labels)
+        loss = loss_fn(outputs, labels)
         real_inputs = (inputs.detach().numpy() *dataset.stds) + dataset.means
         real_outputs, real_labels = undo_normaliztion(outputs, labels, [dataset.means, dataset.stds])
         profit = get_profit(real_outputs, real_labels, real_inputs)
         eval_losses.append(loss.item())
         profits.append(profit)
 
-torch.save(net.state_dict(), str(model_path))
+# torch.save(net.state_dict(), str(model_path))
 
 plt.plot(losses)
 plt.title('Training Loss')
