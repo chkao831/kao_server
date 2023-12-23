@@ -42,3 +42,14 @@
 #
 # ws = websocket.WebSocketApp(socket, on_open=on_open, on_message=on_message, on_close=on_close)
 # ws.run_forever()
+import hydra
+
+
+def main():
+    with hydra.initialize(version_base=None, config_path="./src/config"):
+        config = hydra.compose(config_name="main")
+    print(config)
+
+
+if __name__ == "__main__":
+    main()

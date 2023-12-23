@@ -1,9 +1,2 @@
-defaults:
-  - _self_
-  - agents: agent
-  - models: model
-  - strategies: strategy
-  - common_setting
-
-env:
+common:
   place_holder: 123

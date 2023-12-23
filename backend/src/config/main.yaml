@@ -3,3 +3,6 @@ defaults:
   - agents: agent
   - models: model
   - strategies: strategy
+
+env:
+  place_holder: 123
