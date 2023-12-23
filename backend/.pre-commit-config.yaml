@@ -1,0 +1,51 @@
+exclude: ^(requirements)/
+repos:
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+  - repo: https://github.com/python/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        args: ["--line-length", "100"]
+        language_version: python3.9
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        language_version: python3.9
+        additional_dependencies:
+          - pep8-naming
+          - flake8-absolute-import
+          - flake8-comprehensions
+          - flake8-bugbear
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: debug-statements
+      - id: requirements-txt-fixer
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-docstring-first
+      - id: check-merge-conflict
+      - id: check-yaml
+        args: ["--unsafe"]
+      - id: end-of-file-fixer
+        exclude_types: [yaml, json]
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.3.1
+    hooks:
+      - id: pyupgrade
+        args:
+          - --py39-plus
+          - --keep-runtime-typing
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.16.2
+    hooks:
+      - id: gitleaks
