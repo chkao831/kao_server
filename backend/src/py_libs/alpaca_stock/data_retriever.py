@@ -65,8 +65,11 @@ class AlpacaDataRetriever:
             symbol_or_symbols=symbols, timeframe=TimeFrame.Day, start=new_start, end=new_end
         )
         stock_bars = self.client.get_stock_bars(request_params)
-        new_bars = stock_bars.df.reset_index()
-        new_data_pd = pd.concat([data_pd, new_bars]).reset_index(drop=True)
+        if len(stock_bars.data) == 0:
+            new_data_pd = data_pd
+        else:
+            new_bars = stock_bars.df.reset_index()
+            new_data_pd = pd.concat([data_pd, new_bars]).reset_index(drop=True)
 
         symbol_name = "-".join(symbols)
         st_time_str = start
@@ -74,7 +77,8 @@ class AlpacaDataRetriever:
         file_name = f"{st_time_str}_{ed_time_str}_{symbol_name}.csv"
         new_csv_file = csv_file.parent / file_name
         new_data_pd.to_csv(new_csv_file, index=False)
-        csv_file.unlink()
+        if new_csv_file != csv_file:
+            csv_file.unlink()
 
         return data_pd
 
