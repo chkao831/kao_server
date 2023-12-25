@@ -24,22 +24,6 @@ repos:
           - flake8-bugbear
 
 
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
-    hooks:
-      - id: debug-statements
-      - id: requirements-txt-fixer
-      - id: check-ast
-      - id: check-builtin-literals
-      - id: check-docstring-first
-      - id: check-merge-conflict
-      - id: check-yaml
-        args: ["--unsafe"]
-      - id: end-of-file-fixer
-        exclude_types: [yaml, json]
-      - id: mixed-line-ending
-      - id: trailing-whitespace
-
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.3.1
     hooks:
