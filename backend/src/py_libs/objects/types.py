@@ -29,14 +29,8 @@ class HistoricalData:
         return self.data_pandas
 
 
-class RealTimeData:
-    def __init__(self, data: np.ndarray):
-        self.data: np.ndarray = data
-        self.extra = {}
-
-
 @dataclass
-class StrategyAction:
-    buy_price: float
-    sell_price: float
-    extra_conditions: dict
+class TradingRequest:
+    price: float
+    quantity: float
+    requests_type: str

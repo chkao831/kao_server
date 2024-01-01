@@ -17,9 +17,10 @@
 # print(market_order_data)
 from alpaca.trading.client import TradingClient
 from src.private_keys.keys import KEY_ID, SERET_KEY
+from src.py_libs.objects.basic_trader import BasicTrader
 
 
-class AlpacaTrader:
+class AlpacaTrader(BasicTrader):
     def __init__(self):
         self.trading_client = TradingClient(
             KEY_ID, SERET_KEY, url_override="https://api.alpaca.markets"

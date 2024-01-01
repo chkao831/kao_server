@@ -7,9 +7,10 @@ from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 from src import REPO
 from src.private_keys.keys import KEY_ID, SERET_KEY
+from src.py_libs.objects.basic_data_retriever import BasicDataRetriever
 
 
-class AlpacaDataRetriever:
+class AlpacaDataRetriever(BasicDataRetriever):
     def __init__(self):
         self.client = StockHistoricalDataClient(KEY_ID, SERET_KEY)
         self.saving_folder_path = REPO / "output/historical_data/"

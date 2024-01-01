@@ -7,5 +7,5 @@ class BasicStrategy(ABC):
         pass
 
     @abstractmethod
-    def select_action(self, state):
+    def select_action(self, state) -> None:
         pass
