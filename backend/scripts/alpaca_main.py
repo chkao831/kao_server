@@ -1,6 +1,8 @@
 from pathlib import Path
 
 import hydra
+from src.py_libs.alpaca_stock.trader import AlpacaTrader
+from src.py_libs.objects.types import StrategyState
 from src.py_libs.strategies.simple_strategy import SimpleStrategy
 from src.py_libs.utils.data_process import load_historical_data
 
@@ -15,8 +17,11 @@ def main():
     # )
     # data_retriever.update_all_in_data_dir()
 
-    load_historical_data(Path("output/historical_data"))
-    simple_strategy = SimpleStrategy()
+    historical_data = load_historical_data(Path("output/historical_data"))
+    strategy_state = StrategyState(symbols=["AAPL"], symbols_data={"APPL": historical_data})
+    trader = AlpacaTrader()
+    simple_strategy = SimpleStrategy(trader=trader)
+    simple_strategy.select_action(strategy_state)
 
     print(simple_strategy)
     print(config)

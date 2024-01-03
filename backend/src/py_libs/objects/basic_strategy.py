@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from src.py_libs.objects.types import StrategyState
+
 
 class BasicStrategy(ABC):
     @abstractmethod
@@ -7,5 +9,5 @@ class BasicStrategy(ABC):
         pass
 
     @abstractmethod
-    def select_action(self, state) -> None:
+    def select_action(self, state: StrategyState) -> None:
         pass

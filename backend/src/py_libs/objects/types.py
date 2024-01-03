@@ -32,5 +32,24 @@ class HistoricalData:
 @dataclass
 class TradingRequest:
     price: float
-    quantity: float
+    qty: float
     requests_type: str
+
+
+@dataclass
+class EquityPosition:
+    symbol: str
+    market_value: float
+    qty: float
+
+
+@dataclass
+class AccountPortfolio:
+    total_market_value: float
+    positions: dict[str, EquityPosition]
+
+
+@dataclass
+class StrategyState:
+    symbols: list[str]
+    symbols_data: dict[str, HistoricalData]

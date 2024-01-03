@@ -1,9 +1,15 @@
 from abc import ABC, abstractmethod
 
+from src.py_libs.objects.types import AccountPortfolio
+
 
 class BasicTrader(ABC):
     @abstractmethod
     def __init__(self):
+        pass
+
+    @abstractmethod
+    def get_portfolio(self) -> AccountPortfolio:
         pass
 
     @abstractmethod
