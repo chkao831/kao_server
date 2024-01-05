@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 from src import HISTORICAL_DATA_FEATURES, REPO, START_TIMESTAMP
+from src.py_libs.objects.enum import AssetType
 from src.py_libs.objects.types import HistoricalData
 
 
@@ -18,3 +19,21 @@ def load_historical_data(folder_path: Path):
         )
         all_data[symbol_name] = HistoricalData(data[HISTORICAL_DATA_FEATURES])
     return all_data
+
+
+def get_historical_data_file_name(
+    st_time_str: str, ed_time_str: str, symbols: list, asset_type: AssetType
+) -> str:
+    # Deal with multiple symbols and symbols with "/"
+    symbol_name = "-".join(symbols)
+    symbol_name = symbol_name.replace("/", ")(")
+
+    file_path = f"{st_time_str}_{ed_time_str}_{symbol_name}_{asset_type.value}.csv"
+    return file_path
+
+
+def get_symbols_from_file_name(symbol_name: str) -> list:
+    # Revert multiple symbols and symbols with "/"
+    symbol_name = symbol_name.replace(")(", "/")
+    symbols = symbol_name.split("-")
+    return symbols

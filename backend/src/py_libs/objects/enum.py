@@ -15,3 +15,8 @@ class TimeForce(Enum):
     DAY = "DAY"
     IOC = "IOC"
     FOK = "FOK"
+
+
+class AssetType(Enum):
+    Stock = "Stock"
+    Crypto = "Crypto"
