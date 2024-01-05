@@ -9,3 +9,9 @@ class RequestType(Enum):
 class OrderType(Enum):
     Limit = "Limit"
     Market = "Market"
+
+
+class TimeForce(Enum):
+    DAY = "DAY"
+    IOC = "IOC"
+    FOK = "FOK"

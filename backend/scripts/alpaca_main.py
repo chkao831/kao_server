@@ -18,11 +18,11 @@ def main():
     # data_retriever.update_all_in_data_dir()
 
     historical_data = load_historical_data(Path("output/historical_data"))
-    strategy_state = StrategyState(symbols=["AAPL"], symbols_data={"APPL": historical_data})
+    strategy_state = StrategyState(symbols=["AAPL"], symbols_data=historical_data)
     trader = AlpacaTrader()
     simple_strategy = SimpleStrategy(trader=trader)
-    simple_strategy.select_action(strategy_state)
-
+    requests = simple_strategy.select_action(strategy_state)
+    simple_strategy.trader.execute_requests(requests)
     print(simple_strategy)
     print(config)
 

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.py_libs.objects.types import AccountPortfolio
+from src.py_libs.objects.types import AccountPortfolio, TradingRequest
 
 
 class BasicTrader(ABC):
@@ -13,11 +13,7 @@ class BasicTrader(ABC):
         pass
 
     @abstractmethod
-    def buy_stock(self, symbol, qty) -> None:
-        pass
-
-    @abstractmethod
-    def sell_stock(self, symbol, qty) -> None:
+    def execute_requests(self, requests: list[TradingRequest]) -> None:
         pass
 
     @abstractmethod

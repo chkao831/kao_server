@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 from src import HISTORICAL_DATA_FEATURES
-from src.py_libs.objects.enum import OrderType, RequestType
+from src.py_libs.objects.enum import OrderType, RequestType, TimeForce
 
 
 class HistoricalData:
@@ -37,6 +37,7 @@ class TradingRequest:
     qty: float
     requests_type: RequestType
     order_type: OrderType
+    time_force: TimeForce
 
 
 @dataclass
