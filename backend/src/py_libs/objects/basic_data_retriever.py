@@ -19,7 +19,7 @@ class BasicDataRetriever(ABC):
         end: datetime.datetime,
         asset_type: AssetType,
         save_file=False,
-    ) -> pd.DataFrame:
+    ) -> dict[str, pd.DataFrame]:
         pass
 
     @abstractmethod

@@ -50,25 +50,40 @@ class AlpacaDataRetriever(BasicDataRetriever):
         end: datetime.datetime,
         asset_type: AssetType,
         save_file=False,
-    ) -> pd.DataFrame:
-        client_component = self.client_switcher[asset_type]
-        request_params = client_component.request_type(
-            symbol_or_symbols=symbols, timeframe=TimeFrame.Day, start=start, end=end
-        )
-        data_bars = client_component.get_bars(request_params)
-        if save_file:
-            st_time_str = start.strftime("%Y%m%d")
-            ed_time_str = end.strftime("%Y%m%d")
+    ) -> dict[str, pd.DataFrame]:
+        """Get data of symbols one by one separately within given period.
 
-            self.saving_folder_path.mkdir(parents=True, exist_ok=True)
+        Args:
+            symbols: list of symbols to get data
+            start: start date
+            end: end date
+            asset_type: Crypto or Stock
+            save_file: if save as a csv file
 
-            saving_file_path = self.saving_folder_path / get_historical_data_file_name(
-                st_time_str, ed_time_str, symbols, asset_type
+        Returns:
+            a dict containing dataframe of symbols
+        """
+        symbols_dict = {}
+        for symbol in symbols:
+            client_component = self.client_switcher[asset_type]
+            request_params = client_component.request_type(
+                symbol_or_symbols=[symbol], timeframe=TimeFrame.Day, start=start, end=end
             )
+            data_bars = client_component.get_bars(request_params)
+            symbols_dict[symbol] = data_bars
+            if save_file:
+                st_time_str = start.strftime("%Y%m%d")
+                ed_time_str = end.strftime("%Y%m%d")
 
-            data_bars.df.to_csv(saving_file_path)
+                self.saving_folder_path.mkdir(parents=True, exist_ok=True)
 
-        return data_bars.df
+                saving_file_path = self.saving_folder_path / get_historical_data_file_name(
+                    st_time_str, ed_time_str, symbol, asset_type
+                )
+
+                data_bars.df.to_csv(saving_file_path)
+
+        return symbols_dict
 
     def update_historical_data(self, csv_file: Path, asset_type: AssetType) -> pd.DataFrame:
         client_component = self.client_switcher[asset_type]
