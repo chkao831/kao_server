@@ -42,32 +42,34 @@ class AlpacaTrader(BasicTrader):
         }
 
         portfolio = AccountPortfolio(
-            total_market_value=float(account.portfolio_value), positions=positions
+            total_market_value=float(account.portfolio_value),
+            non_marginable_buying_power=float(account.non_marginable_buying_power),
+            positions=positions,
         )
 
         return portfolio
 
     def execute_requests(self, requests: list[TradingRequest]) -> None:
         for request in requests:
-            if request.order_type == OrderType.Limit:
+            if request.order_type == OrderType.LIMIT:
                 market_order_data = LimitOrderRequest(
                     symbol=request.symbol,
                     qty=request.qty,
                     limit_price=request.price,
                     side=OrderSide.SELL
-                    if request.requests_type == RequestType.Sell
+                    if request.requests_type == RequestType.SELL
                     else OrderSide.BUY,
-                    time_in_force=TimeInForce.DAY,
+                    time_in_force=TimeInForce(request.time_force.value),
                 )
 
-            elif request.order_type == OrderType.Market:
+            elif request.order_type == OrderType.MARKET:
                 market_order_data = MarketOrderRequest(
                     symbol=request.symbol,
                     qty=request.qty,
                     side=OrderSide.SELL
-                    if request.requests_type == RequestType.Sell
+                    if request.requests_type == RequestType.SELL
                     else OrderSide.BUY,
-                    time_in_force=TimeInForce.DAY,
+                    time_in_force=TimeInForce(request.time_force.value),
                 )
             else:
                 raise ValueError(f"Unsupported order_type: {request.order_type}")

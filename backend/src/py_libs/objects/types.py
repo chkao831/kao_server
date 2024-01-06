@@ -50,6 +50,7 @@ class EquityPosition:
 @dataclass
 class AccountPortfolio:
     total_market_value: float
+    non_marginable_buying_power: float
     positions: dict[str, EquityPosition]
 
 

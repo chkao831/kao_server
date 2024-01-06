@@ -2,6 +2,7 @@ from datetime import datetime
 from pathlib import Path
 
 import hydra
+from src import REPO
 from src.py_libs.alpaca_stock.data_retriever import AlpacaDataRetriever
 from src.py_libs.alpaca_stock.trader import AlpacaTrader
 from src.py_libs.objects.enum import AssetType
@@ -11,12 +12,12 @@ from src.py_libs.utils.data_process import load_historical_data
 
 
 def main():
-    with hydra.initialize(version_base=None, config_path="../src/config"):
+    with hydra.initialize_config_dir(version_base=None, config_dir=str(REPO / "src/config")):
         config = hydra.compose(config_name="main")
 
     data_retriever = AlpacaDataRetriever()
     data_retriever.get_historical_data(
-        ["BTC/USD"],
+        ["BTC/USD", "ETH/USD"],
         datetime(2021, 12, 1),
         datetime(2023, 12, 1),
         asset_type=AssetType.Crypto,
@@ -25,10 +26,10 @@ def main():
     data_retriever.update_all_in_data_dir(asset_type=AssetType.Crypto)
 
     historical_data = load_historical_data(Path("output/historical_data"))
-    strategy_state = StrategyState(symbols=["BTC/USD"], symbols_data=historical_data)
+    strategy_state = StrategyState(symbols=["BTC/USD", "ETH/USD"], symbols_data=historical_data)
     trader = AlpacaTrader()
     simple_strategy = SimpleStrategy(trader=trader)
-    requests = simple_strategy.select_action(strategy_state)
+    requests = simple_strategy.select_action(strategy_state, asset_type=AssetType.Crypto)
     simple_strategy.trader.execute_requests(requests)
     print(simple_strategy)
     print(config)

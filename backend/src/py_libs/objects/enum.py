@@ -2,19 +2,19 @@ from enum import Enum
 
 
 class RequestType(Enum):
-    Sell = "Sell"
-    Buy = "Buy"
+    SELL = "sell"
+    BUY = "buy"
 
 
 class OrderType(Enum):
-    Limit = "Limit"
-    Market = "Market"
+    LIMIT = "limit"
+    MARKET = "market"
 
 
 class TimeForce(Enum):
-    DAY = "DAY"
-    IOC = "IOC"
-    FOK = "FOK"
+    DAY = "day"
+    IOC = "ioc"
+    FOK = "fok"
 
 
 class AssetType(Enum):
