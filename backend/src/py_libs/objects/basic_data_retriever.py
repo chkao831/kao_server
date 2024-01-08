@@ -17,6 +17,7 @@ class BasicDataRetriever(ABC):
         symbols: list,
         start: datetime.datetime,
         end: datetime.datetime,
+        interval: datetime.timedelta,
         asset_type: AssetType,
         save_file=False,
     ) -> dict[str, pd.DataFrame]:

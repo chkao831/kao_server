@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import hydra
@@ -18,8 +18,9 @@ def main():
     data_retriever = AlpacaDataRetriever()
     data_retriever.get_historical_data(
         ["BTC/USD", "ETH/USD"],
-        datetime(2021, 12, 1),
         datetime(2023, 12, 1),
+        datetime(2023, 12, 10),
+        interval=timedelta(minutes=10),
         asset_type=AssetType.Crypto,
         save_file=True,
     )

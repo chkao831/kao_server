@@ -1,13 +1,13 @@
-import datetime
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import pandas as pd
 from alpaca.common.rest import RESTClient
 from alpaca.data.historical import CryptoHistoricalDataClient, StockHistoricalDataClient
 from alpaca.data.requests import BaseBarsRequest, CryptoBarsRequest, StockBarsRequest
-from alpaca.data.timeframe import TimeFrame
+from alpaca.data.timeframe import TimeFrame, TimeFrameUnit
 from src import REPO
 from src.private_keys.keys import KEY_ID, SERET_KEY
 from src.py_libs.objects.basic_data_retriever import BasicDataRetriever
@@ -46,8 +46,9 @@ class AlpacaDataRetriever(BasicDataRetriever):
     def get_historical_data(
         self,
         symbols: list,
-        start: datetime.datetime,
-        end: datetime.datetime,
+        start: datetime,
+        end: datetime,
+        interval: timedelta,
         asset_type: AssetType,
         save_file=False,
     ) -> dict[str, pd.DataFrame]:
@@ -57,6 +58,7 @@ class AlpacaDataRetriever(BasicDataRetriever):
             symbols: list of symbols to get data
             start: start date
             end: end date
+            interval: interval of each data,
             asset_type: Crypto or Stock
             save_file: if save as a csv file
 
@@ -67,7 +69,10 @@ class AlpacaDataRetriever(BasicDataRetriever):
         for symbol in symbols:
             client_component = self.client_switcher[asset_type]
             request_params = client_component.request_type(
-                symbol_or_symbols=[symbol], timeframe=TimeFrame.Day, start=start, end=end
+                symbol_or_symbols=[symbol],
+                timeframe=TimeFrame(amount=interval.seconds // 60, unit=TimeFrameUnit.Minute),
+                start=start,
+                end=end,
             )
             data_bars = client_component.get_bars(request_params)
             symbols_dict[symbol] = data_bars
@@ -78,7 +83,7 @@ class AlpacaDataRetriever(BasicDataRetriever):
                 self.saving_folder_path.mkdir(parents=True, exist_ok=True)
 
                 saving_file_path = self.saving_folder_path / get_historical_data_file_name(
-                    st_time_str, ed_time_str, symbol, asset_type
+                    st_time_str, ed_time_str, symbol, interval, asset_type
                 )
 
                 data_bars.df.to_csv(saving_file_path)
@@ -89,14 +94,18 @@ class AlpacaDataRetriever(BasicDataRetriever):
         client_component = self.client_switcher[asset_type]
         data_delay_hours = 1 if asset_type == AssetType.Stock else 0
         data_pd = pd.read_csv(csv_file)
-        start, end, symbol_name, file_asset_type = csv_file.stem.split("_")
+        start, end, interval_str, symbol_name, file_asset_type = csv_file.stem.split("_")
+        interval = timedelta(minutes=int(interval_str[:-1]))
         # change to from end to yesterday, no permission for free account
-        new_start = datetime.datetime.strptime(end, "%Y%m%d")
-        new_end = datetime.datetime.today() - datetime.timedelta(hours=data_delay_hours)
+        new_start = datetime.strptime(end, "%Y%m%d")
+        new_end = datetime.today() - timedelta(hours=data_delay_hours)
 
-        symbols = get_symbols_from_file_name(symbol_name)
+        symbol_name = get_symbols_from_file_name(symbol_name)
         request_params = client_component.request_type(
-            symbol_or_symbols=symbols, timeframe=TimeFrame.Day, start=new_start, end=new_end
+            symbol_or_symbols=symbol_name,
+            timeframe=TimeFrame(amount=interval.seconds // 60, unit=TimeFrameUnit.Minute),
+            start=new_start,
+            end=new_end,
         )
         data_bars = client_component.get_bars(request_params)
         if len(data_bars.data) == 0:
@@ -107,7 +116,9 @@ class AlpacaDataRetriever(BasicDataRetriever):
 
         st_time_str = start
         ed_time_str = new_end.strftime("%Y%m%d")
-        file_name = get_historical_data_file_name(st_time_str, ed_time_str, symbols, asset_type)
+        file_name = get_historical_data_file_name(
+            st_time_str, ed_time_str, symbol_name, interval, asset_type
+        )
         new_csv_file = csv_file.parent / file_name
         new_data_pd.to_csv(new_csv_file, index=False)
         if new_csv_file != csv_file:
@@ -117,5 +128,5 @@ class AlpacaDataRetriever(BasicDataRetriever):
 
     def update_all_in_data_dir(self, asset_type: AssetType):
         for file_path in self.saving_folder_path.iterdir():
-            start, end, symbols, file_asset_type = file_path.stem.split("_")
+            start, end, interval_str, symbols, file_asset_type = file_path.stem.split("_")
             self.update_historical_data(file_path, AssetType(file_asset_type))

@@ -1,4 +1,5 @@
 import datetime
+from datetime import timedelta
 from pathlib import Path
 
 import pandas as pd
@@ -22,16 +23,17 @@ def load_historical_data(folder_path: Path):
 
 
 def get_historical_data_file_name(
-    st_time_str: str, ed_time_str: str, symbol_name: str, asset_type: AssetType
+    st_time_str: str, ed_time_str: str, symbol_name: str, interval: timedelta, asset_type: AssetType
 ) -> str:
     # Deal symbols with "/"
     symbol_name = symbol_name.replace("/", "-")
+    interval_min = interval.seconds // 60
 
-    file_path = f"{st_time_str}_{ed_time_str}_{symbol_name}_{asset_type.value}.csv"
+    file_path = f"{st_time_str}_{ed_time_str}_{interval_min}m_{symbol_name}_{asset_type.value}.csv"
     return file_path
 
 
-def get_symbols_from_file_name(symbol_name: str) -> list:
+def get_symbols_from_file_name(symbol_name: str) -> str:
     # Revert symbols with "/"
     symbol_name = symbol_name.replace("-", "/")
     return symbol_name
