@@ -14,7 +14,7 @@ class SimpleStrategy(BasicStrategy):
         portfolio = self.trader.get_portfolio()
         requests = []
         for symbol in state.symbols:
-            expected_price = state.symbols_data[symbol].data_np[:, 1:4].mean()
+            expected_price = state.symbols_data[symbol].data_np[-50:, 1:4].mean()
             buy_price = expected_price * 0.85
             sell_price = expected_price * 1.15
             if symbol in portfolio.positions:
