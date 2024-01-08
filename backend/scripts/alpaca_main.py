@@ -17,20 +17,20 @@ def main():
 
     data_retriever = AlpacaDataRetriever()
     data_retriever.get_historical_data(
-        ["BTC/USD", "ETH/USD"],
+        ["AAPL", "GOOG"],
         datetime(2023, 12, 1),
         datetime(2023, 12, 10),
         interval=timedelta(minutes=10),
-        asset_type=AssetType.Crypto,
+        asset_type=AssetType.Stock,
         save_file=True,
     )
-    data_retriever.update_all_in_data_dir(asset_type=AssetType.Crypto)
+    data_retriever.update_all_in_data_dir(asset_type=AssetType.Stock)
 
     historical_data = load_historical_data(Path("output/historical_data"))
-    strategy_state = StrategyState(symbols=["BTC/USD", "ETH/USD"], symbols_data=historical_data)
+    strategy_state = StrategyState(symbols=["AAPL"], symbols_data=historical_data)
     trader = AlpacaTrader()
     simple_strategy = SimpleStrategy(trader=trader)
-    requests = simple_strategy.select_action(strategy_state, asset_type=AssetType.Crypto)
+    requests = simple_strategy.select_action(strategy_state, asset_type=AssetType.Stock)
     simple_strategy.trader.execute_requests(requests)
     print(simple_strategy)
     print(config)
