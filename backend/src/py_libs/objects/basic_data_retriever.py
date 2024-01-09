@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 from src.py_libs.objects.enum import AssetType
+from src.py_libs.objects.types import MarketQuote
 
 
 class BasicDataRetriever(ABC):
@@ -29,4 +30,8 @@ class BasicDataRetriever(ABC):
 
     @abstractmethod
     def update_all_in_data_dir(self, asset_type: AssetType):
+        pass
+
+    @abstractmethod
+    def get_latest_quote(self, symbols: list[str]) -> dict[str, MarketQuote]:
         pass

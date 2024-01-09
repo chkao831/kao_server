@@ -6,12 +6,18 @@ from pathlib import Path
 import pandas as pd
 from alpaca.common.rest import RESTClient
 from alpaca.data.historical import CryptoHistoricalDataClient, StockHistoricalDataClient
-from alpaca.data.requests import BaseBarsRequest, CryptoBarsRequest, StockBarsRequest
+from alpaca.data.requests import (
+    BaseBarsRequest,
+    CryptoBarsRequest,
+    StockBarsRequest,
+    StockLatestQuoteRequest,
+)
 from alpaca.data.timeframe import TimeFrame, TimeFrameUnit
 from src import REPO
 from src.private_keys.keys import KEY_ID, SERET_KEY
 from src.py_libs.objects.basic_data_retriever import BasicDataRetriever
 from src.py_libs.objects.enum import AssetType
+from src.py_libs.objects.types import MarketQuote
 from src.py_libs.utils.data_process import (
     get_historical_data_file_name,
     get_symbols_from_file_name,
@@ -130,3 +136,8 @@ class AlpacaDataRetriever(BasicDataRetriever):
         for file_path in self.saving_folder_path.iterdir():
             start, end, interval_str, symbols, file_asset_type = file_path.stem.split("_")
             self.update_historical_data(file_path, AssetType(file_asset_type))
+
+    def get_latest_quote(self, symbols: list[str], asset_type: AssetType) -> dict[str, MarketQuote]:
+        quote_request = StockLatestQuoteRequest(symbol_or_symbols=["SPY", "GLD", "TLT"])
+        print(quote_request)
+        return {}
