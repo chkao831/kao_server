@@ -5,4 +5,4 @@ defaults:
   - strategies: strategy
 
 env:
-  place_holder: 123
+  interval_minutes: 10
