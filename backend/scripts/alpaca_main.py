@@ -25,11 +25,16 @@ def main():
         save_file=True,
     )
     data_retriever.update_all_in_data_dir(asset_type=AssetType.Stock)
+    latest_quote = data_retriever.get_latest_quote(
+        symbols=["AAPL", "GOOG"], asset_type=AssetType.Stock
+    )
 
     historical_data = load_historical_data(
         Path("output/historical_data"), interval_minutes=interval_minutes
     )
-    strategy_state = StrategyState(symbols=["AAPL"], symbols_data=historical_data)
+    strategy_state = StrategyState(
+        symbols=["AAPL"], symbols_data=historical_data, symbols_latest_quote=latest_quote
+    )
     trader = AlpacaTrader()
     simple_strategy = SimpleStrategy(trader=trader)
     requests = simple_strategy.select_action(strategy_state, asset_type=AssetType.Stock)

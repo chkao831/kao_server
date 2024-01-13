@@ -12,6 +12,7 @@ class SimpleStrategy(BasicStrategy):
 
     def select_action(self, state: StrategyState, asset_type: AssetType) -> list[TradingRequest]:
         if asset_type == AssetType.Crypto:
+            raise ValueError(f"Unsupported asset_type: {asset_type}")
             return self._select_action_crypto(state)
         elif asset_type == AssetType.Stock:
             return self._select_action_stock(state)
@@ -19,35 +20,47 @@ class SimpleStrategy(BasicStrategy):
             raise ValueError(f"Unsupported asset_type: {asset_type}")
 
     def _select_action_stock(self, state: StrategyState) -> list[TradingRequest]:
+        """Return a MarketOrderRequest according to current price, size and expected price.
+
+        Args:
+            state:
+
+        Returns:
+
+        """
         portfolio = self.trader.get_portfolio()
         requests = []
         for symbol in state.symbols:
-            # current_price = self.trader.get_latest_quote([symbol])
-            expected_price = state.symbols_data[symbol].data_np[-50:, 1:4].mean()
+            latest_quote = state.symbols_latest_quote[symbol]
+            hist_data = state.symbols_data[symbol]
+            current_price = (latest_quote.ask_price + latest_quote.bid_price) / 2
+            current_quote_size = min(latest_quote.ask_size, latest_quote.bid_size)
+
+            expected_price = hist_data.data_np[-50:, 1:4].mean()
             buy_price = expected_price * 0.85
             sell_price = expected_price * 1.15
-            if symbol in portfolio.positions:
-                sell_qty = portfolio.positions[symbol].qty
+            if symbol in portfolio.positions and current_price > sell_price:
+                sell_qty = min(portfolio.positions[symbol].qty, current_quote_size)
                 sell_req = TradingRequest(
                     symbol=symbol,
                     qty=sell_qty,
-                    price=sell_price,
                     requests_type=RequestType.SELL,
-                    order_type=OrderType.LIMIT,
+                    order_type=OrderType.MARKET,
                     time_force=TimeForce.IOC,
                 )
                 requests.append(sell_req)
             buying_power = portfolio.total_market_value
-            buy_qty = buying_power / buy_price
-            buy_req = TradingRequest(
-                symbol=symbol,
-                qty=buy_qty,
-                price=buy_price,
-                requests_type=RequestType.BUY,
-                order_type=OrderType.LIMIT,
-                time_force=TimeForce.IOC,
-            )
-            requests.append(buy_req)
+            buying_power_qty = buying_power / buy_price
+            buy_qty = min(buying_power_qty, current_quote_size)
+            if current_price < buy_price:
+                buy_req = TradingRequest(
+                    symbol=symbol,
+                    qty=buy_qty,
+                    requests_type=RequestType.BUY,
+                    order_type=OrderType.MARKET,
+                    time_force=TimeForce.IOC,
+                )
+                requests.append(buy_req)
         return requests
 
     def _select_action_crypto(self, state: StrategyState) -> list[TradingRequest]:

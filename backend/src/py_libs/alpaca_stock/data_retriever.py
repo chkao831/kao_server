@@ -138,6 +138,22 @@ class AlpacaDataRetriever(BasicDataRetriever):
             self.update_historical_data(file_path, AssetType(file_asset_type))
 
     def get_latest_quote(self, symbols: list[str], asset_type: AssetType) -> dict[str, MarketQuote]:
-        quote_request = StockLatestQuoteRequest(symbol_or_symbols=["SPY", "GLD", "TLT"])
-        print(quote_request)
-        return {}
+        def make_market_quote_dict(quote_response: dict) -> dict[str, MarketQuote]:
+            market_quote_dict = {}
+            for key in quote_response:
+                market_quote_dict[key] = MarketQuote(
+                    ask_price=quote_response[key].ask_price,
+                    ask_size=quote_response[key].ask_size,
+                    bid_price=quote_response[key].bid_price,
+                    bid_size=quote_response[key].bid_size,
+                )
+            return market_quote_dict
+
+        client = self.client_switcher[asset_type].client
+        if asset_type == AssetType.Stock:
+            quote_request = StockLatestQuoteRequest(symbol_or_symbols=symbols)
+            latest_quote_response = client.get_stock_latest_quote(quote_request)
+            market_quote_dict = make_market_quote_dict(latest_quote_response)
+        else:
+            raise ValueError(f"Unsupported asset_type: {asset_type}")
+        return market_quote_dict

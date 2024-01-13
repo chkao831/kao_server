@@ -55,14 +55,15 @@ class AccountPortfolio:
 
 
 @dataclass
-class StrategyState:
-    symbols: list[str]
-    symbols_data: dict[str, HistoricalData]
-
-
-@dataclass
 class MarketQuote:
     ask_price: float
     ask_size: float
     bid_price: float
     bid_size: float
+
+
+@dataclass
+class StrategyState:
+    symbols: list[str]
+    symbols_data: dict[str, HistoricalData]
+    symbols_latest_quote: dict[str, MarketQuote | None]
