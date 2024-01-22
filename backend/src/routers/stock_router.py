@@ -46,3 +46,9 @@ def fetch_historical(days: int):
 def get_chapter(chapter_id: str):
     img_path = chapter_controller.get_image(chapter_id)
     return Response(content=img_path.read_bytes(), media_type="image/png")
+
+@router.get("/get_ch_txt/{chapter_id}")
+async def get_chapter_txt(chapter_id: str):
+    txt_path = chapter_controller.get_txt(chapter_id)
+    return Response(content=txt_path.read_text(), media_type="text/plain")
+    

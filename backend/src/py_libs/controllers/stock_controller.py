@@ -20,3 +20,9 @@ class ChapterController:
     def get_image(self, chapter_id) -> None:
         img_path = Path(self.img_dir_abs) / f"{chapter_id}.png"
         return img_path
+
+    def get_txt(self, chapter_id) -> None:
+        txt_path = Path(self.img_dir_abs) / f"{chapter_id}.txt"
+        return txt_path
+        
+    
