@@ -1,6 +1,7 @@
 /backend/src/private_keys/
 /backend/output/
 /backend/model_checkpoint/
+/data_img/
 /.idea_back/
 /Roadmap.md
 /py_env/
