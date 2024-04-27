@@ -29,6 +29,7 @@ def fetch_transaction():
 
 @router.get("/fetchPrediction")
 def fetch_prediction():
+    print("Test")
     print("fetch_plot: ")
     return {"isReady": True}
 
