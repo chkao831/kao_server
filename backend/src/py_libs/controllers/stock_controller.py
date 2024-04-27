@@ -53,17 +53,17 @@ def text_to_html(text):
                 color: #bbbbbb;  /* Text color */
             }}
             .chapter-title {{
-                font-size: 24px;  /* Larger than the body text */
+                font-size: 32px;  /* Larger than the body text */
                 font-weight: bold;  /* Make the title bold */
                 color: #eeeeee;
                 /* margin: 20px 0;  Add some space around the title */
             }}
             .chapter-author {{
-                font-size: 8px;  /* Smaller than the title */
+                font-size: 16px;  /* Smaller than the title */
                 color: #eeeeee;
             }}
             .chapter-content {{
-                font-size: 16px;  /* Size of the body text */
+                font-size: 26px;  /* Size of the body text */
             }}
         </style>
     </head>
