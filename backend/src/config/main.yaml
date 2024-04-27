@@ -1,8 +1,0 @@
-defaults:
-  - _self_
-  - agents: agent
-  - models: model
-  - strategies: strategy
-
-env:
-  interval_minutes: 10
