@@ -38,6 +38,7 @@ def fetch_prediction():
 
 @router.get("/fetchHistorical/{days}")
 def fetch_historical(days: int):
+    print()
     print("fetch_plot: ", days)
     return {"isReady": True}
 
