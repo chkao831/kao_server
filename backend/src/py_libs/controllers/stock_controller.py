@@ -53,7 +53,7 @@ def text_to_html(text):
                 color: #bbbbbb;  /* Text color */
             }}
             .chapter-title {{
-                font-size: 32px;  /* Larger than the body text */
+                font-size: 36px;  /* Larger than the body text */
                 font-weight: bold;  /* Make the title bold */
                 color: #eeeeee;
                 /* margin: 20px 0;  Add some space around the title */
@@ -69,7 +69,7 @@ def text_to_html(text):
     </head>
     <body>
         <div class="chapter-title">{chapter_title}</div>
-        <div class="chapter-author">     Copyright © DoorWoodBDX (LOFTER/AiFaDian)</div>
+        <div class="chapter-author">     Copyright © DoorWoodBDX (LOFTER/AFDian)</div>
         <div class="chapter-content">
             {html_text}
         </div>
