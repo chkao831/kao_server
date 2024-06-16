@@ -47,6 +47,7 @@ const items = [
                                 ['《洛夜知秋 21》仙陵全刑', `${base_url}/lyzc_ch21`], 
                                 ['《洛夜知秋 22》生而为光', `${base_url}/lyzc_ch22`], 
                                 ['《洛夜知秋 23》师兄教训', `${base_url}/lyzc_ch23`], 
+                                ['《洛夜知秋 24》糯米团子', `${base_url}/lyzc_ch24`], 
     ]}
 ];
 
