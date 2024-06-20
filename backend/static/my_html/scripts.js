@@ -26,6 +26,7 @@ const items = [
                                 ['《山行 42》惩戒期——尾声',`${base_url}/sx_ch42`],
                                 ['《山行 46》旧帐',`${base_url}/sx_ch46`],
                                 ['《山行 49》暗桩',`${base_url}/sx_ch49`],
+                                ['《山行 50》兄长',`${base_url}/sx_ch50`],
                             ]},
     { name: '《洛夜知秋》- 2024精修', apis: [
                                 ['《洛夜知秋 3》星火燎原', `${base_url}/lyzc_ch3`], 
